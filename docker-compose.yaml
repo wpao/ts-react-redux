@@ -1,0 +1,50 @@
+services:
+  # =====================================================
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: "albaeud/ts-react-redux-course" # nama image tidak harus ada "albaeud/" karna kita akan menggunakan "tag" ketika akan push ke docker registry
+    container_name: react_app_container
+    ports:
+      - "3000:80" # Map port 3000 on host to port 80 in the container
+    networks:
+      - react-network
+  # =====================================================
+  json-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.json-server
+      args:
+        INCLUDE_DB: "false" # Untuk pengembangan, tidak termasuk db.json
+    image: "albaeud/db-json"
+    container_name: json_server_container
+    ports:
+      - "2000:3000" # Expose json-server on port 2000
+    volumes:
+      - ./db.json:/app/db.json
+    profiles:
+      - dev # Profil untuk pengembangan
+    networks:
+      - react-network
+
+  json-server-deployment:
+    build:
+      context: .
+      dockerfile: Dockerfile.json-server
+      args:
+        INCLUDE_DB: "true" # Untuk deployment, termasuk db.json
+    image: "albaeud/db-json"
+    container_name: json_server_container
+    ports:
+      - "2000:3000" # Expose json-server on port 2000
+    profiles:
+      - prod # Profil untuk deployment
+    networks:
+      - react-network
+
+# =====================================================
+networks:
+  react-network:
+    name: react-network # Nama khusus untuk network
+    driver: bridge

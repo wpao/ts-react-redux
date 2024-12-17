@@ -8,6 +8,7 @@ import ProductManagementPage from "./pages/admin/ProductManagementPage";
 import CreateProductPage from "./pages/admin/CreateProductPage";
 import EditProductPage from "./pages/admin/EditProductPage";
 import CounterPage from "./pages/CounterPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   const location = useLocation();
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" Component={HomePage} />
         <Route path="/login" Component={LoginPage} />
         <Route path="/counter" Component={CounterPage} />
+        <Route path="/register" Component={RegisterPage} />
         <Route path="/products/:productId" Component={ProductDetailPage} />
 
         {/* admin */}

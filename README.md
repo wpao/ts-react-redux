@@ -51,7 +51,52 @@ export default tseslint.config({
 
 ## run
 
-```sh
-pnpm run dev
-pnpx json-server -p 2000 db.json
+jalankan json-server
+json-server adalah db sementara yang memanpaatkan pnpm add json-server
+bash berikut untuk menjalankan json-server
+
+```bash
+docker compose --profile dev up -d
+```
+
+menjalankan container
+
+```bash
+docker compose start
+atau
+docker container start namaContainer/containerId
+```
+
+stop container secara manual
+
+```bash
+docker compose stop
+docker container stop namaContainer/containerId
+```
+
+<!-- ================ -->
+
+perintah menggunakan docker compose
+
+```
+docker compose build
+docker compose create
+docker compose start
+docker compose down
+
+docker images
+docker image rm namaimage/imageid
+
+docker ps
+docker container ls -a
+docker container rm namacontainer/containerid
+
+docker images
+docker tag react-app:latest my-docker-repo/react-app:latest
+docker push my-docker-repo/react-app:latest
+docker pull my-docker-repo/react-app:latest
+
+docker compose --profile dev up
+docker compose --profile dev up -d
+docker compose --profile prod up --build
 ```

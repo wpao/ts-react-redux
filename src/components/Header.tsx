@@ -14,6 +14,10 @@ export const Header = () => {
       <Input placeholder="Search..." className="w-1/3" />
 
       <div className="flex space-x-2">
+        {/* <Link to={"/admin/products/create"}>
+          <Button>add product</Button>
+        </Link> */}
+
         <Button variant="ghost" size={"icon"}>
           <IoCart className="w-6 h-6" />
         </Button>
