@@ -6,10 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -23,94 +20,81 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { axiosInstance } from "@/lib/axios";
-import { useDispatch, useSelector } from "react-redux";
-
-const loginFormSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters").max(6),
-  password: z.string().min(4, "Password must be at least 4 characters"),
-});
-
-// memberi type
-import { RootState } from "../store/store";
 import { GuestPage } from "@/components/guard/GuestPage";
 
-const LoginPage = () => {
-  // menggunakan dispatch untuk mengubah state global
-  const dispatch = useDispatch();
+const registerFormSchema = z
+  .object({
+    username: z
+      .string()
+      .min(3, "Username must be at least 3 characters")
+      .max(6),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    repeatPassword: z.string().min(8, "Password must be at least 8 characters"),
+  })
+  .superRefine(({ password, repeatPassword }, ctx) => {
+    if (password !== repeatPassword) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Password does not match",
+        path: ["repeatPassword"],
+      });
+    }
+  });
 
-  // mengambil satu slice yaitu user
-  const userSelector = useSelector((state: RootState) => state.user);
-
-  const [isChecked, setIsChecked] = useState<boolean>(false);
-
+const RegisterPage = () => {
   const form = useForm({
     defaultValues: {
       username: "",
       password: "",
+      repeatPassword: "",
     },
-    resolver: zodResolver(loginFormSchema),
+    resolver: zodResolver(registerFormSchema),
   });
 
-  // handle login
-  const handleLogin = async (values: LoginValues) => {
+  const handleRegister = async (values: RegisterValues) => {
     try {
-      // username harus unik dan password harus sesuai
-      const userResponse = await axiosInstance.get("/users", {
+      // cek apakah username sudah ada atau belum
+      const userResponse = await axiosInstance.get("users", {
         params: {
           username: values.username,
-          password: values.password,
         },
       });
-      // console.log(userResponse.data[0].username);
-      // console.log(userResponse.data);
-      // console.log(values.username);
 
-      if (!userResponse.data.length) {
-        alert("Username or password is incorrect");
+      if (userResponse.data.length) {
+        alert("Username already exists");
+
+        // hentikan proses
         return;
       }
 
-      alert(`Login successful for ${values.username}`);
-
-      console.log("Dispatching USER_LOGIN:", userResponse.data[0]);
-
-      // simpan user id ke local storage
-      // ini di pakai untuk melihat user yang login
-      localStorage.setItem(
-        "current-user",
-        // JSON.stringify(userResponse.data[0].id)
-        userResponse.data[0].id
-      );
-
-      dispatch({
-        type: "USER_LOGIN",
-        payload: {
-          username: userResponse.data[0].username,
-          id: userResponse.data[0].id,
-          role: userResponse.data[0].role,
-        },
+      // post user
+      await axiosInstance.post("/users", {
+        username: values.username,
+        password: values.password,
+        role: "user",
       });
 
+      alert("User created successfully");
       form.reset();
     } catch (error) {
       console.log(error);
     }
-
     // console.log(values)
     // alert(`Username: ${values.username} | Password: ${values.password}`);
   };
 
   return (
+    // GuestPage bertugas sebagai pengatur halaman yang muncul berdasarkan user yang login
     <GuestPage>
       <main className="flex flex-col justify-center items-center h-[80vh] ">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleLogin)}
+            onSubmit={form.handleSubmit(handleRegister)}
             className="max-w-md w-full"
           >
             <Card>
               <CardHeader>
-                <CardTitle>Welcome Back! {userSelector.username}</CardTitle>
+                <CardTitle>Create an Account!</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-2">
                 <FormField
@@ -135,35 +119,36 @@ const LoginPage = () => {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          type={isChecked ? "text" : "password"}
-                        />
+                        <Input {...field} type="password" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="show-password"
-                    onCheckedChange={(checked: boolean) =>
-                      setIsChecked(checked)
-                    }
-                  />
-                  <Label htmlFor="show-password">Show Password</Label>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="repeatPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Repeat Password</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="password" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
               <CardFooter>
                 <div className="flex flex-col space-y-4 w-full">
                   <Button
                     type="submit" /* disabled={!form.formState.isValid} */
                   >
-                    Login
+                    Register
                   </Button>
                   <Button variant="link" className="w-full">
-                    Sign Up
+                    Log in instead
                   </Button>
                 </div>
               </CardFooter>
@@ -175,10 +160,12 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
 
 // types
-type LoginValues = {
+type RegisterValues = {
   username: string;
   password: string;
 };
+
+// comment ini di buat untuk tes extension power waduh ini apak kj

@@ -126,5 +126,19 @@
       "stock": 0,
       "imageUrl": "https://images.unsplash.com/photo-1685475454000-3d7c59b7c1d9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8fHw%3D"
     }
+  ],
+  "users": [
+    {
+      "id": "f81b",
+      "username": "wpao",
+      "password": "password",
+      "role": "user"
+    },
+    {
+      "id": "866f",
+      "username": "admin",
+      "password": "password",
+      "role": "admin"
+    }
   ]
 }

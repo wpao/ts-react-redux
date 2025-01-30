@@ -54,4 +54,27 @@ export default tseslint.config({
 ```sh
 pnpm run dev
 pnpx json-server -p 2000 db.json
+
+# install tailwindcss
+pnpm add -D tailwindcss postcss autoprefixer
+pnpx tailwindcss init -p
+
+# (so you can import "path" without error)
+pnpm install -D @types/node
+
+# add componen shadcn
+pnpm dlx shadcn@latest add button
+pnpm dlx shadcn@latest add input
+pnpm dlx shadcn@latest add card label checkbox
+pnpm dlx shadcn@latest add form
+pnpm dlx shadcn@latest add skeleton
+pnpm dlx shadcn@latest add table
+pnpm dlx shadcn@latest add pagination
+
+# install
+pnpm add react-icons
+pnpm add react-router-dom
+pnpm add react-hook-form
+pnpm add -g json-server # install json-server sebagai simulasi API
+pnpm add redux react-redux
 ```

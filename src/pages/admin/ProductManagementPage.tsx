@@ -24,6 +24,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Form, FormItem, FormControl, FormField } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AdminPage } from "@/components/guard/AdminPage";
 
 const ProductManagementPage = () => {
   // search params

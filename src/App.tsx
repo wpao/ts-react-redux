@@ -8,11 +8,20 @@ import ProductManagementPage from "./pages/admin/ProductManagementPage";
 import CreateProductPage from "./pages/admin/CreateProductPage";
 import EditProductPage from "./pages/admin/EditProductPage";
 import CounterPage from "./pages/CounterPage";
+import RegisterPage from "./pages/RegisterPage";
+import { useHydration } from "./hooks/useHydration";
 
 function App() {
+  // melihat location kita saat ini pada url
   const location = useLocation();
-  // console.log(location.pathname);
 
+  const { isHydrated } = useHydration();
+  // akan terloaded jika isHydrated = false
+  if (!isHydrated) {
+    return <div>Loading...</div>;
+  }
+
+  // akan terloaded jika isHydrated = true
   return (
     <>
       {!location.pathname.startsWith("/admin") ? <Header /> : null}
@@ -20,6 +29,7 @@ function App() {
         <Route path="/" Component={HomePage} />
         <Route path="/login" Component={LoginPage} />
         <Route path="/counter" Component={CounterPage} />
+        <Route path="/register" Component={RegisterPage} />
         <Route path="/products/:productId" Component={ProductDetailPage} />
 
         {/* admin */}
